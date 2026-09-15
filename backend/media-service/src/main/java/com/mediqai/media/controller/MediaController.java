@@ -29,4 +29,27 @@ public class MediaController {
 
         return ResponseEntity.ok(media);
     }
+
+    @GetMapping("/{entityType}/{entityId}")
+    public ResponseEntity<?> getMediaByEntity(
+            @PathVariable String entityType,
+            @PathVariable Long entityId
+    ) {
+
+        return ResponseEntity.ok(
+                mediaService.getMediaByEntity(entityType, entityId)
+        );
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteMedia(
+            @PathVariable Long id
+    ) throws Exception {
+
+        mediaService.deleteMedia(id);
+
+        return ResponseEntity.ok(
+                "Xóa media thành công"
+        );
+    }
 }

@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -40,10 +41,12 @@ public class MediaService {
         }
 
         // 3. Upload lên Cloudinary
+        String folder = getUploadFolder(entityType);
+
         Map uploadResult = cloudinary.uploader().upload(
                 file.getBytes(),
                 ObjectUtils.asMap(
-                        "folder", "mediq-ai"
+                        "folder", folder
                 )
         );
 
@@ -64,4 +67,45 @@ public class MediaService {
 
         return mediaRepository.save(media);
     }
+
+    public List<Media> getMediaByEntity(
+            String entityType,
+            Long entityId
+    ) {
+
+        return mediaRepository.findByEntityTypeAndEntityId(
+                entityType,
+                entityId
+        );
+    }
+
+    public void deleteMedia(Long id) throws IOException {
+
+        // 1. Tìm media trong database
+        Media media = mediaRepository.findById(id)
+                .orElseThrow(() ->
+                        new IllegalArgumentException("Không tìm thấy media"));
+
+        // 2. Xóa ảnh trên Cloudinary
+        cloudinary.uploader().destroy(
+                media.getPublicId(),
+                ObjectUtils.emptyMap()
+        );
+
+        // 3. Xóa record trong MySQL
+        mediaRepository.delete(media);
+    }
+
+    private String getUploadFolder(String entityType) {
+
+        return switch (entityType.toUpperCase()) {
+            case "PATIENT" -> "mediq-ai/patients";
+            case "DOCTOR" -> "mediq-ai/doctors";
+            case "CLINIC" -> "mediq-ai/clinics";
+            default -> throw new IllegalArgumentException(
+                    "Entity type không hợp lệ: " + entityType
+            );
+        };
+    }
+
 }

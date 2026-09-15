@@ -12,5 +12,4 @@ public interface MediaRepository extends JpaRepository<Media, Long> {
             Long entityId
     );
 
-    void deleteByPublicId(String publicId);
 }
