@@ -20,6 +20,4 @@ public class UpdateProfileRequest {
             message = "Số điện thoại không hợp lệ"
     )
     private String phone;
-
-    private String avatarUrl;
 }

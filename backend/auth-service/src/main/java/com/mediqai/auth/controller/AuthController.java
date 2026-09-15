@@ -8,9 +8,11 @@ import com.mediqai.auth.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -135,13 +137,27 @@ public class AuthController {
         return ResponseEntity.ok("Đổi mật khẩu thành công");
     }
 
-    @PutMapping("/me")
+    @PutMapping(value = "/me", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<UserResponse> updateProfile(
             Authentication authentication,
-            @Valid @RequestBody UpdateProfileRequest request) {
+
+            @RequestParam("fullName") String fullName,
+            @RequestParam("phone") String phone,
+
+            @RequestPart(value = "avatar", required = false)
+            MultipartFile avatar
+    ) throws Exception {
+
+        UpdateProfileRequest request = new UpdateProfileRequest();
+        request.setFullName(fullName);
+        request.setPhone(phone);
 
         UserResponse response =
-                authService.updateProfile(authentication.getName(), request);
+                authService.updateProfile(
+                        authentication.getName(),
+                        request,
+                        avatar
+                );
 
         return ResponseEntity.ok(response);
     }

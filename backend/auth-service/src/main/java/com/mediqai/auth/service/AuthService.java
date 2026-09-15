@@ -1,5 +1,6 @@
 package com.mediqai.auth.service;
 
+import com.mediqai.auth.client.MediaClient;
 import com.mediqai.auth.dto.request.*;
 import com.mediqai.auth.dto.response.LoginResponse;
 import com.mediqai.auth.dto.response.RegisterResponse;
@@ -14,6 +15,10 @@ import com.mediqai.auth.security.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +28,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final OtpService otpService;
+    private final MediaClient mediaClient;
 
     // ==============================
     // REGISTER
@@ -315,22 +321,50 @@ public class AuthService {
 
     public UserResponse updateProfile(
             String currentEmail,
-            UpdateProfileRequest request) {
+            UpdateProfileRequest request,
+            MultipartFile avatar
+    ) throws IOException {
 
         User user = userRepository.findByEmail(currentEmail)
                 .orElseThrow(() ->
                         new BadRequestException("Không tìm thấy tài khoản"));
 
+        // Kiểm tra số điện thoại trùng
         if (!user.getPhone().equals(request.getPhone())
                 && userRepository.existsByPhone(request.getPhone())) {
 
             throw new DuplicateResourceException(
-                    "Số điện thoại đã được sử dụng");
+                    "Số điện thoại đã được sử dụng"
+            );
         }
 
+        // Cập nhật thông tin cơ bản
         user.setFullName(request.getFullName());
         user.setPhone(request.getPhone());
-        user.setAvatarUrl(request.getAvatarUrl());
+
+        // ==========================================
+        // REPLACE AVATAR
+        // ==========================================
+
+        if (avatar != null && !avatar.isEmpty()) {
+
+            Map result = mediaClient.replaceAvatar(
+                    avatar,
+                    user.getRole().name(),
+                    user.getId()
+            );
+
+            String newAvatarUrl =
+                    (String) result.get("url");
+
+            if (newAvatarUrl != null && !newAvatarUrl.isBlank()) {
+                user.setAvatarUrl(newAvatarUrl);
+            }
+        }
+
+        // ==========================================
+        // LƯU USER
+        // ==========================================
 
         User savedUser = userRepository.save(user);
 
