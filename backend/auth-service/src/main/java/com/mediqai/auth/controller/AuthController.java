@@ -134,4 +134,15 @@ public class AuthController {
 
         return ResponseEntity.ok("Đổi mật khẩu thành công");
     }
+
+    @PutMapping("/me")
+    public ResponseEntity<UserResponse> updateProfile(
+            Authentication authentication,
+            @Valid @RequestBody UpdateProfileRequest request) {
+
+        UserResponse response =
+                authService.updateProfile(authentication.getName(), request);
+
+        return ResponseEntity.ok(response);
+    }
 }

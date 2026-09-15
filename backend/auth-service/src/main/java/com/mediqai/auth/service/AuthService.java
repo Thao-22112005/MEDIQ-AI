@@ -113,6 +113,7 @@ public class AuthService {
                 .role(user.getRole().name())
                 .status(user.getStatus())
                 .accessToken(accessToken)
+                .avatarUrl(user.getAvatarUrl())
                 .build();
     }
 
@@ -310,5 +311,37 @@ public class AuthService {
         );
 
         userRepository.save(user);
+    }
+
+    public UserResponse updateProfile(
+            String currentEmail,
+            UpdateProfileRequest request) {
+
+        User user = userRepository.findByEmail(currentEmail)
+                .orElseThrow(() ->
+                        new BadRequestException("Không tìm thấy tài khoản"));
+
+        if (!user.getPhone().equals(request.getPhone())
+                && userRepository.existsByPhone(request.getPhone())) {
+
+            throw new DuplicateResourceException(
+                    "Số điện thoại đã được sử dụng");
+        }
+
+        user.setFullName(request.getFullName());
+        user.setPhone(request.getPhone());
+        user.setAvatarUrl(request.getAvatarUrl());
+
+        User savedUser = userRepository.save(user);
+
+        return UserResponse.builder()
+                .id(savedUser.getId())
+                .fullName(savedUser.getFullName())
+                .email(savedUser.getEmail())
+                .phone(savedUser.getPhone())
+                .role(savedUser.getRole().name())
+                .status(savedUser.getStatus())
+                .avatarUrl(savedUser.getAvatarUrl())
+                .build();
     }
 }

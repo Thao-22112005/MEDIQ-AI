@@ -18,4 +18,5 @@ public class LoginResponse {
     private String role;
     private String status;
     private String accessToken;
+    private String avatarUrl;
 }
