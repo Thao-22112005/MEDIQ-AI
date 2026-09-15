@@ -283,4 +283,32 @@ public class AuthService {
                 OtpType.REGISTER
         );
     }
+
+    public void changePassword(String email, ChangePasswordRequest request) {
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new BadRequestException("Không tìm thấy tài khoản"));
+
+        if (!passwordEncoder.matches(
+                request.getCurrentPassword(),
+                user.getPasswordHash())) {
+
+            throw new BadRequestException(
+                    "Mật khẩu hiện tại không chính xác");
+        }
+
+        if (request.getCurrentPassword()
+                .equals(request.getNewPassword())) {
+
+            throw new BadRequestException(
+                    "Mật khẩu mới phải khác mật khẩu hiện tại");
+        }
+
+        user.setPasswordHash(
+                passwordEncoder.encode(request.getNewPassword())
+        );
+
+        userRepository.save(user);
+    }
 }

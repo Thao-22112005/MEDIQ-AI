@@ -36,9 +36,6 @@ public class AuthController {
                 .body(response);
     }
 
-    // ==============================
-    // LOGIN
-    // ==============================
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(
@@ -123,5 +120,18 @@ public class AuthController {
         return ResponseEntity.ok(
                 "OTP mới đã được gửi đến email"
         );
+    }
+
+    @PostMapping("/change-password")
+    public ResponseEntity<String> changePassword(
+            Authentication authentication,
+            @Valid @RequestBody ChangePasswordRequest request) {
+
+        authService.changePassword(
+                authentication.getName(),
+                request
+        );
+
+        return ResponseEntity.ok("Đổi mật khẩu thành công");
     }
 }
