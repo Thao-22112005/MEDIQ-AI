@@ -37,7 +37,12 @@ public class SecurityConfig {
                         // Không cần JWT
                         .requestMatchers(
                                 "/api/auth/register",
-                                "/api/auth/login"
+                                "/api/auth/verify-register",
+                                "/api/auth/resend-register-otp",
+                                "/api/auth/login",
+                                "/api/auth/forgot-password",
+                                "/api/auth/verify-forgot-password",
+                                "/api/auth/reset-password"
                         ).permitAll()
 
                         // Các API khác bắt buộc đăng nhập

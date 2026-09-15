@@ -1,10 +1,10 @@
 package com.mediqai.auth.service;
 
-import com.mediqai.auth.dto.request.LoginRequest;
-import com.mediqai.auth.dto.request.RegisterRequest;
+import com.mediqai.auth.dto.request.*;
 import com.mediqai.auth.dto.response.LoginResponse;
 import com.mediqai.auth.dto.response.RegisterResponse;
 import com.mediqai.auth.dto.response.UserResponse;
+import com.mediqai.auth.entity.OtpType;
 import com.mediqai.auth.entity.Role;
 import com.mediqai.auth.entity.User;
 import com.mediqai.auth.exception.BadRequestException;
@@ -22,6 +22,7 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final OtpService otpService;
 
     // ==============================
     // REGISTER
@@ -46,13 +47,20 @@ public class AuthService {
                 .email(request.getEmail())
                 .phone(request.getPhone())
                 .passwordHash(
-                        passwordEncoder.encode(request.getPassword())
+                        passwordEncoder.encode(
+                                request.getPassword()
+                        )
                 )
                 .role(Role.PATIENT)
-                .status("ACTIVE")
+                .status("PENDING")
                 .build();
 
         User savedUser = userRepository.save(user);
+
+        otpService.createAndSendOtp(
+                savedUser,
+                OtpType.REGISTER
+        );
 
         return RegisterResponse.builder()
                 .id(savedUser.getId())
@@ -70,7 +78,6 @@ public class AuthService {
 
     public LoginResponse login(LoginRequest request) {
 
-        // Tìm user theo email
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() ->
                         new BadRequestException(
@@ -78,7 +85,6 @@ public class AuthService {
                         )
                 );
 
-        // Kiểm tra password bằng BCrypt
         if (!passwordEncoder.matches(
                 request.getPassword(),
                 user.getPasswordHash()
@@ -88,14 +94,12 @@ public class AuthService {
             );
         }
 
-        // Kiểm tra trạng thái tài khoản
         if (!"ACTIVE".equals(user.getStatus())) {
             throw new BadRequestException(
                     "Tài khoản đã bị khóa hoặc không hoạt động"
             );
         }
 
-        // Tạo JWT
         String accessToken = jwtService.generateToken(
                 user.getEmail(),
                 user.getRole().name()
@@ -111,6 +115,10 @@ public class AuthService {
                 .accessToken(accessToken)
                 .build();
     }
+
+    // ==============================
+    // GET CURRENT USER
+    // ==============================
 
     public UserResponse getCurrentUser(String email) {
 
@@ -129,5 +137,150 @@ public class AuthService {
                 .role(user.getRole().name())
                 .status(user.getStatus())
                 .build();
+    }
+
+    // ==============================
+    // VERIFY REGISTER OTP
+    // ==============================
+
+    public void verifyRegisterOtp(
+            VerifyOtpRequest request
+    ) {
+
+        User user = userRepository
+                .findByEmail(request.getEmail())
+                .orElseThrow(() ->
+                        new BadRequestException(
+                                "Tài khoản không tồn tại"
+                        )
+                );
+
+        if ("ACTIVE".equals(user.getStatus())) {
+            throw new BadRequestException(
+                    "Tài khoản đã được xác thực"
+            );
+        }
+
+        otpService.verifyOtp(
+                user,
+                request.getOtp(),
+                OtpType.REGISTER
+        );
+
+        user.setStatus("ACTIVE");
+
+        userRepository.save(user);
+    }
+
+    // ==============================
+    // FORGOT PASSWORD
+    // ==============================
+
+    public void forgotPassword(
+            ForgotPasswordRequest request
+    ) {
+
+        User user = userRepository
+                .findByEmail(request.getEmail())
+                .orElse(null);
+
+        // Không tiết lộ email có tồn tại hay không
+        if (user == null) {
+            return;
+        }
+
+        otpService.createAndSendOtp(
+                user,
+                OtpType.FORGOT_PASSWORD
+        );
+    }
+
+    // ==============================
+    // VERIFY FORGOT PASSWORD OTP
+    // ==============================
+
+    public void verifyForgotPasswordOtp(
+            VerifyOtpRequest request
+    ) {
+
+        User user = userRepository
+                .findByEmail(request.getEmail())
+                .orElseThrow(() ->
+                        new BadRequestException(
+                                "OTP không hợp lệ"
+                        )
+                );
+
+        otpService.verifyOtp(
+                user,
+                request.getOtp(),
+                OtpType.FORGOT_PASSWORD
+        );
+    }
+
+    // ==============================
+    // RESET PASSWORD
+    // ==============================
+
+    public void resetPassword(
+            ResetPasswordRequest request
+    ) {
+
+        User user = userRepository
+                .findByEmail(request.getEmail())
+                .orElseThrow(() ->
+                        new BadRequestException(
+                                "Không tìm thấy tài khoản"
+                        )
+                );
+
+        // Bắt buộc OTP FORGOT_PASSWORD
+        // phải được xác thực trước khi đổi password
+        if (!otpService.isOtpVerified(
+                user,
+                OtpType.FORGOT_PASSWORD
+        )) {
+            throw new BadRequestException(
+                    "Bạn chưa xác thực OTP hoặc OTP đã hết hiệu lực"
+            );
+        }
+
+        user.setPasswordHash(
+                passwordEncoder.encode(
+                        request.getNewPassword()
+                )
+        );
+
+        userRepository.save(user);
+
+        // Không cho dùng lại OTP sau khi reset password
+        otpService.consumeVerifiedOtp(
+                user,
+                OtpType.FORGOT_PASSWORD
+        );
+    }
+
+    public void resendRegisterOtp(
+            ResendOtpRequest request
+    ) {
+
+        User user = userRepository
+                .findByEmail(request.getEmail())
+                .orElseThrow(() ->
+                        new BadRequestException(
+                                "Tài khoản không tồn tại"
+                        )
+                );
+
+        if ("ACTIVE".equals(user.getStatus())) {
+            throw new BadRequestException(
+                    "Tài khoản đã được xác thực"
+            );
+        }
+
+        otpService.createAndSendOtp(
+                user,
+                OtpType.REGISTER
+        );
     }
 }
