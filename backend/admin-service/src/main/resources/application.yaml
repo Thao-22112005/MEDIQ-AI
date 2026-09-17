@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: admin-service
+
+server:
+  port: 8084
+
+jwt:
+  secret: ${JWT_SECRET}
