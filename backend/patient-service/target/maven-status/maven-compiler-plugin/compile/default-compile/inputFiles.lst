@@ -1,0 +1,16 @@
+C:\Users\Acer\Desktop\MEDIQ-AI-feature-be-ai\MEDIQ-AI-feature-be-ai\backend\patient-service\src\main\java\com\mediqai\patient\controller\PatientController.java
+C:\Users\Acer\Desktop\MEDIQ-AI-feature-be-ai\MEDIQ-AI-feature-be-ai\backend\patient-service\src\main\java\com\mediqai\patient\repository\PatientRepository.java
+C:\Users\Acer\Desktop\MEDIQ-AI-feature-be-ai\MEDIQ-AI-feature-be-ai\backend\patient-service\src\main\java\com\mediqai\patient\service\PatientService.java
+C:\Users\Acer\Desktop\MEDIQ-AI-feature-be-ai\MEDIQ-AI-feature-be-ai\backend\patient-service\src\main\java\com\mediqai\patient\config\SecurityConfig.java
+C:\Users\Acer\Desktop\MEDIQ-AI-feature-be-ai\MEDIQ-AI-feature-be-ai\backend\patient-service\src\main\java\com\mediqai\patient\controller\MedicalRecordController.java
+C:\Users\Acer\Desktop\MEDIQ-AI-feature-be-ai\MEDIQ-AI-feature-be-ai\backend\patient-service\src\main\java\com\mediqai\patient\security\JwtService.java
+C:\Users\Acer\Desktop\MEDIQ-AI-feature-be-ai\MEDIQ-AI-feature-be-ai\backend\patient-service\src\main\java\com\mediqai\patient\entity\MedicalRecord.java
+C:\Users\Acer\Desktop\MEDIQ-AI-feature-be-ai\MEDIQ-AI-feature-be-ai\backend\patient-service\src\main\java\com\mediqai\patient\service\MedicalRecordService.java
+C:\Users\Acer\Desktop\MEDIQ-AI-feature-be-ai\MEDIQ-AI-feature-be-ai\backend\patient-service\src\main\java\com\mediqai\patient\dto\PatientResponse.java
+C:\Users\Acer\Desktop\MEDIQ-AI-feature-be-ai\MEDIQ-AI-feature-be-ai\backend\patient-service\src\main\java\com\mediqai\patient\entity\Patient.java
+C:\Users\Acer\Desktop\MEDIQ-AI-feature-be-ai\MEDIQ-AI-feature-be-ai\backend\patient-service\src\main\java\com\mediqai\patient\security\JwtAuthenticationFilter.java
+C:\Users\Acer\Desktop\MEDIQ-AI-feature-be-ai\MEDIQ-AI-feature-be-ai\backend\patient-service\src\main\java\com\mediqai\patient\PatientServiceApplication.java
+C:\Users\Acer\Desktop\MEDIQ-AI-feature-be-ai\MEDIQ-AI-feature-be-ai\backend\patient-service\src\main\java\com\mediqai\patient\dto\MedicalRecordResponse.java
+C:\Users\Acer\Desktop\MEDIQ-AI-feature-be-ai\MEDIQ-AI-feature-be-ai\backend\patient-service\src\main\java\com\mediqai\patient\dto\PatientRequest.java
+C:\Users\Acer\Desktop\MEDIQ-AI-feature-be-ai\MEDIQ-AI-feature-be-ai\backend\patient-service\src\main\java\com\mediqai\patient\repository\MedicalRecordRepository.java
+C:\Users\Acer\Desktop\MEDIQ-AI-feature-be-ai\MEDIQ-AI-feature-be-ai\backend\patient-service\src\main\java\com\mediqai\patient\dto\MedicalRecordRequest.java
