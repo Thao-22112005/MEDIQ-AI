@@ -12,15 +12,22 @@
         </processorPath>
         <module name="auth-service" />
       </profile>
-      <profile name="Annotation profile for admin-service" enabled="true">
+      <profile name="Annotation profile for ai-service" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="false">
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.46/lombok-1.18.46.jar" />
         </processorPath>
+        <module name="ai-service" />
         <module name="admin-service" />
         <module name="media-service" />
+      </profile>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="patient-service" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -30,8 +37,10 @@
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="admin-service" options="-parameters" />
+      <module name="ai-service" options="-parameters" />
       <module name="auth-service" options="-parameters" />
       <module name="media-service" options="-parameters" />
+      <module name="patient-service" options="-parameters" />
       <module name="profile-service" options="-parameters" />
     </option>
   </component>

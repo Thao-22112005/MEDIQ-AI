@@ -24,4 +24,27 @@ public class PatientService {
     public List<Patient> getAllPatients() {
         return patientRepository.findAll();
     }
+
+    public Patient getPatientById(Long id) {
+        return patientRepository.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("Không tìm thấy bệnh nhân ID: " + id));
+    }
+
+    public Patient updatePatient(Long id, PatientRequest request) {
+
+        Patient patient = patientRepository.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("Không tìm thấy bệnh nhân ID: " + id));
+
+        patient.setFullName(request.getFullName());
+        patient.setPhone(request.getPhone());
+        patient.setGender(request.getGender());
+
+        if (request.getDateOfBirth() != null) {
+            patient.setDateOfBirth(request.getDateOfBirth().toString());
+        }
+
+        return patientRepository.save(patient);
+    }
 }
