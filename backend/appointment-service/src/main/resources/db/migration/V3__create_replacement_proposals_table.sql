@@ -1,0 +1,21 @@
+CREATE TABLE IF NOT EXISTS replacement_proposals (
+    proposal_id CHAR(36) PRIMARY KEY,
+    appointment_id CHAR(36) NOT NULL,
+    original_doctor_id CHAR(36) NOT NULL,
+    proposed_doctor_id CHAR(36) NOT NULL,
+    proposed_clinic_id CHAR(36) NOT NULL,
+    proposed_specialty_id CHAR(36) NOT NULL,
+    proposed_room_id CHAR(36) NOT NULL,
+    proposed_slot_id CHAR(36) NOT NULL,
+    proposed_date DATE NOT NULL,
+    proposed_start_time TIME NOT NULL,
+    proposed_end_time TIME NOT NULL,
+    status VARCHAR(20) NOT NULL DEFAULT 'PENDING',
+    expires_at DATETIME(6) NOT NULL,
+    responded_at DATETIME(6) NULL,
+    created_at DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+    updated_at DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+    CONSTRAINT fk_proposal_appointment FOREIGN KEY (appointment_id) REFERENCES appointments (appointment_id),
+    INDEX idx_proposal_appointment (appointment_id),
+    INDEX idx_proposal_status_expires (status, expires_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
