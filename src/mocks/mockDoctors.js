@@ -1,6 +1,6 @@
 export const MOCK_DOCTORS = [
   { id: 101, name: "BS. Lê Hoài Nam", specialty: "Tim mạch", rating: 4.9, experience: "12 năm", avatar: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&q=80&w=150", availableSlots: ["09:30 AM", "10:15 AM", "02:00 PM"] },
-  { id: 102, name: "BS. Tran Thu Hà", specialty: "Nội khoa", rating: 4.8, experience: "8 năm", avatar: "https://images.unsplash.com/photo-1594824813566-88855ce78961?auto=format&fit=crop&q=80&w=150", availableSlots: ["08:30 AM", "11:00 AM", "03:30 PM"] },
+  { id: 102, name: "BS. Trần Thu Hà", specialty: "Nội khoa", rating: 4.8, experience: "8 năm", avatar: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=150", availableSlots: ["08:30 AM", "11:00 AM", "03:30 PM"] },
   { id: 103, name: "BS. Phạm Minh Đức", specialty: "Ngoại khoa", rating: 4.95, experience: "15 năm", avatar: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&q=80&w=150", availableSlots: ["10:00 AM", "01:30 PM", "04:15 PM"] },
   { id: 104, name: "BS. Nguyễn Mai Anh", specialty: "Da liễu", rating: 4.7, experience: "6 năm", avatar: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=150", availableSlots: ["09:00 AM", "02:30 PM", "04:00 PM"] }
 ];

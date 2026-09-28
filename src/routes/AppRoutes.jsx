@@ -5,13 +5,16 @@ import { RoleProtectedRoute } from "../auth/RoleProtectedRoute";
 import { Header } from "../components/Header";
 import { Sidebar } from "../components/Sidebar";
 
-// Pages
+// Auth Pages
 import { LoginPage } from "../pages/LoginPage";
+import { RegisterPage } from "../pages/RegisterPage";
+import { ForgotPasswordPage } from "../pages/ForgotPasswordPage";
 
 // Patient Pages
 import { PatientDashboard } from "../pages/patient/PatientDashboard";
 import { AiChatAndTriage } from "../pages/patient/AiChatAndTriage";
 import { PatientBooking } from "../pages/patient/PatientBooking";
+import { ClinicMap } from "../pages/patient/ClinicMap"; // IMPORT MỚI
 import { MyAppointments } from "../pages/patient/MyAppointments";
 import { PatientMedicalRecords } from "../pages/patient/PatientMedicalRecords";
 import { PatientProfile } from "../pages/patient/PatientProfile";
@@ -31,11 +34,11 @@ import { AdminRooms } from "../pages/admin/AdminRooms";
 import { AdminAppointments } from "../pages/admin/AdminAppointments";
 
 const DashboardLayout = ({ children }) => (
-  <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans">
+  <div className="min-h-screen bg-slate-100 text-slate-800 flex flex-col font-sans">
     <Header />
     <div className="flex flex-1">
       <Sidebar />
-      <main className="flex-1 p-6 overflow-y-auto max-w-7xl mx-auto w-full">{children}</main>
+      <main className="flex-1 p-6 overflow-y-auto max-w-7xl mx-auto w-full bg-slate-100">{children}</main>
     </div>
   </div>
 );
@@ -44,6 +47,8 @@ export const AppRoutes = () => {
   return (
     <Routes>
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/register" element={<RegisterPage />} />
+      <Route path="/forgot-password" element={<ForgotPasswordPage />} />
 
       {/* PATIENT ROUTES */}
       <Route
@@ -56,6 +61,7 @@ export const AppRoutes = () => {
                   <Route path="dashboard" element={<PatientDashboard />} />
                   <Route path="ai-chat" element={<AiChatAndTriage />} />
                   <Route path="booking" element={<PatientBooking />} />
+                  <Route path="map" element={<ClinicMap />} /> {/* ROUTE MỚI */}
                   <Route path="appointments" element={<MyAppointments />} />
                   <Route path="records" element={<PatientMedicalRecords />} />
                   <Route path="profile" element={<PatientProfile />} />
@@ -109,7 +115,6 @@ export const AppRoutes = () => {
         }
       />
 
-      {/* Fallback */}
       <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
   );

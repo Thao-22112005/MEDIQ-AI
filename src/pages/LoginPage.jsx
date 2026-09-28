@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useAuth } from "../auth/AuthContext";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import { Activity, Lock, Mail, Eye, EyeOff, AlertCircle, ArrowRight } from "lucide-react";
 
 export const LoginPage = () => {
@@ -13,7 +13,6 @@ export const LoginPage = () => {
 
   const { login } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -37,6 +36,21 @@ export const LoginPage = () => {
     }
   };
 
+  // Hàm giả lập đăng nhập bằng Mạng xã hội (Social Login)
+  const handleSocialLogin = async (providerName) => {
+    setError("");
+    setIsSubmitting(true);
+    try {
+      // Giả lập đăng nhập mặc định với quyền PATIENT bằng tài khoản Social
+      const loggedUser = await login("patient@mediq.ai", "123456");
+      navigate("/patient/dashboard", { replace: true });
+    } catch (err) {
+      setError(`Đã xảy ra lỗi khi kết nối với ${providerName}`);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   const quickFill = (accEmail) => {
     setEmail(accEmail);
     setPassword("123456");
@@ -44,27 +58,27 @@ export const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col justify-center items-center p-4 relative overflow-hidden">
-      {/* Background Orbs */}
-      <div className="absolute top-1/4 left-1/3 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
-      <div className="absolute bottom-1/4 right-1/3 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none"></div>
+    <div className="min-h-screen bg-gradient-to-br from-cyan-50 via-white to-blue-50 text-slate-800 flex flex-col justify-center items-center p-4 relative overflow-hidden">
+      {/* Background Orbs mờ ảo tông sáng */}
+      <div className="absolute top-1/4 left-1/3 w-96 h-96 bg-cyan-200/40 rounded-full blur-3xl pointer-events-none"></div>
+      <div className="absolute bottom-1/4 right-1/3 w-96 h-96 bg-blue-200/40 rounded-full blur-3xl pointer-events-none"></div>
 
       <div className="w-full max-w-md relative z-10">
         {/* Brand Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center p-3 bg-cyan-500/10 rounded-2xl border border-cyan-500/20 mb-4 text-cyan-400">
+          <div className="inline-flex items-center justify-center p-3 bg-cyan-500 rounded-2xl shadow-lg shadow-cyan-500/30 mb-4 text-white">
             <Activity className="w-10 h-10 animate-pulse" />
           </div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-white">MEDIQ AI</h1>
-          <p className="text-sm text-cyan-400 font-medium tracking-wide mt-1 uppercase">Smart Clinic Platform</p>
+          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">MEDIQ AI</h1>
+          <p className="text-sm text-cyan-600 font-semibold tracking-wide mt-1 uppercase">Smart Clinic Platform</p>
         </div>
 
         {/* Login Card */}
-        <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-2xl backdrop-blur-xl">
-          <h2 className="text-xl font-bold text-slate-100 mb-6">Đăng nhập hệ thống</h2>
+        <div className="bg-white/90 border border-slate-200/80 rounded-2xl p-6 sm:p-8 shadow-xl backdrop-blur-xl">
+          <h2 className="text-xl font-bold text-slate-900 mb-6">Đăng nhập hệ thống</h2>
 
           {error && (
-            <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm flex items-start gap-3">
+            <div className="mb-6 p-4 rounded-xl bg-red-50 border border-red-200 text-red-600 text-sm flex items-start gap-3">
               <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
               <span>{error}</span>
             </div>
@@ -72,68 +86,68 @@ export const LoginPage = () => {
 
           <form onSubmit={handleLogin} className="space-y-5">
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
                 Email
               </label>
               <div className="relative">
-                <Mail className="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" />
+                <Mail className="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
                 <input
                   type="email"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="name@mediq.ai"
-                  className="w-full pl-11 pr-4 py-3 rounded-xl bg-slate-950 border border-slate-800 text-slate-100 placeholder-slate-600 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition text-sm"
+                  className="w-full pl-11 pr-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 placeholder-slate-400 focus:outline-none focus:border-cyan-500 focus:bg-white focus:ring-1 focus:ring-cyan-500 transition text-sm"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
                 Mật khẩu
               </label>
               <div className="relative">
-                <Lock className="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" />
+                <Lock className="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
                 <input
                   type={showPassword ? "text" : "password"}
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full pl-11 pr-11 py-3 rounded-xl bg-slate-950 border border-slate-800 text-slate-100 placeholder-slate-600 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition text-sm"
+                  className="w-full pl-11 pr-11 py-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 placeholder-slate-400 focus:outline-none focus:border-cyan-500 focus:bg-white focus:ring-1 focus:ring-cyan-500 transition text-sm"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300"
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
             </div>
 
-            <div className="flex items-center justify-between text-xs text-slate-400">
+            <div className="flex items-center justify-between text-xs text-slate-500">
               <label className="flex items-center gap-2 cursor-pointer">
                 <input
                   type="checkbox"
                   checked={rememberMe}
                   onChange={(e) => setRememberMe(e.target.checked)}
-                  className="rounded border-slate-800 bg-slate-950 text-cyan-500 focus:ring-cyan-500/20"
+                  className="rounded border-slate-300 text-cyan-600 focus:ring-cyan-500/20"
                 />
                 <span>Ghi nhớ đăng nhập</span>
               </label>
-              <a href="#forgot" onClick={(e) => e.preventDefault()} className="text-cyan-400 hover:underline">
+              <Link to="/forgot-password" className="text-cyan-600 hover:underline font-semibold">
                 Quên mật khẩu?
-              </a>
+              </Link>
             </div>
 
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full py-3.5 px-4 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold flex items-center justify-center gap-2 transition shadow-lg shadow-cyan-500/20 disabled:opacity-50"
+              className="w-full py-3.5 px-4 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold flex items-center justify-center gap-2 transition shadow-md shadow-cyan-600/20 disabled:opacity-50"
             >
               {isSubmitting ? (
-                <div className="w-5 h-5 border-2 border-slate-950 border-t-transparent rounded-full animate-spin"></div>
+                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
               ) : (
                 <>
                   <span>Đăng nhập</span>
@@ -143,37 +157,102 @@ export const LoginPage = () => {
             </button>
           </form>
 
+          {/* Dòng phân cách Phương thức đăng nhập khác */}
+          <div className="relative my-6 text-center">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-slate-200"></div>
+            </div>
+            <span className="relative bg-white px-3 text-xs text-slate-400 font-medium">
+              Hoặc đăng nhập bằng
+            </span>
+          </div>
+
+          {/* Nút Đăng nhập Google & Facebook */}
+          <div className="grid grid-cols-2 gap-3">
+            {/* Nút Google */}
+            <button
+              type="button"
+              onClick={() => handleSocialLogin("Google")}
+              disabled={isSubmitting}
+              className="flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 font-semibold text-xs transition shadow-xs"
+            >
+              <svg className="w-4 h-4" viewBox="0 0 24 24">
+                <path
+                  fill="#4285F4"
+                  d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                />
+                <path
+                  fill="#34A853"
+                  d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                />
+                <path
+                  fill="#FBBC05"
+                  d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"
+                />
+                <path
+                  fill="#EA4335"
+                  d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
+                />
+              </svg>
+              <span>Google</span>
+            </button>
+
+            {/* Nút Facebook */}
+            <button
+              type="button"
+              onClick={() => handleSocialLogin("Facebook")}
+              disabled={isSubmitting}
+              className="flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 font-semibold text-xs transition shadow-xs"
+            >
+              <svg className="w-4 h-4 fill-[#1877F2]" viewBox="0 0 24 24">
+                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+              </svg>
+              <span>Facebook</span>
+            </button>
+          </div>
+
           {/* Quick Demo Login selector */}
-          <div className="mt-8 pt-6 border-t border-slate-800/80">
+          <div className="mt-6 pt-5 border-t border-slate-100">
             <p className="text-xs text-slate-500 font-medium mb-3 text-center">Tài khoản DEMO trải nghiệm nhanh:</p>
             <div className="grid grid-cols-3 gap-2">
               <button
                 type="button"
                 onClick={() => quickFill("patient@mediq.ai")}
-                className="py-2 px-1 text-xs rounded-lg bg-slate-800 hover:bg-slate-700 text-cyan-300 border border-slate-700 text-center font-medium transition"
+                className="py-2 px-1 text-xs rounded-lg bg-cyan-50 hover:bg-cyan-100 text-cyan-700 border border-cyan-200 text-center font-semibold transition"
               >
                 PATIENT
               </button>
               <button
                 type="button"
                 onClick={() => quickFill("doctor@mediq.ai")}
-                className="py-2 px-1 text-xs rounded-lg bg-slate-800 hover:bg-slate-700 text-emerald-300 border border-slate-700 text-center font-medium transition"
+                className="py-2 px-1 text-xs rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 text-center font-semibold transition"
               >
                 DOCTOR
               </button>
               <button
                 type="button"
                 onClick={() => quickFill("admin@mediq.ai")}
-                className="py-2 px-1 text-xs rounded-lg bg-slate-800 hover:bg-slate-700 text-purple-300 border border-slate-700 text-center font-medium transition"
+                className="py-2 px-1 text-xs rounded-lg bg-purple-50 hover:bg-purple-100 text-purple-700 border border-purple-200 text-center font-semibold transition"
               >
                 ADMIN
               </button>
             </div>
           </div>
+
+          {/* Tạo tài khoản mới */}
+          <div className="mt-6 pt-4 border-t border-slate-100 text-center">
+            <p className="text-xs text-slate-500">
+              Chưa có tài khoản?{" "}
+              <Link to="/register" className="text-cyan-600 hover:underline font-bold">
+                Tạo tài khoản ngay
+              </Link>
+            </p>
+          </div>
         </div>
 
-        <p className="text-center text-xs text-slate-600 mt-6">
-          MEDIQ Smart Clinic Platform &copy; 2026. Microservices & AI Architecture.
+        {/* Footer */}
+        <p className="text-center text-xs text-slate-500 mt-6 font-medium">
+          HỆ THỐNG MEDIQ TÍCH HỢP TRÍ TUỆ NHÂN TẠO HỖ TRỢ PHÒNG KHÁM THÔNG MINH.
         </p>
       </div>
     </div>
