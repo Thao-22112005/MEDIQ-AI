@@ -213,7 +213,7 @@ export const LoginPage = () => {
 
           {/* Quick Demo Login selector */}
           <div className="mt-6 pt-5 border-t border-slate-100">
-            <p className="text-xs text-slate-500 font-medium mb-3 text-center">Tài khoản DEMO trải nghiệm nhanh:</p>
+            <p className="text-xs text-slate-500 font-medium mb-3 text-center">Lựa chọn vai trò</p>
             <div className="grid grid-cols-3 gap-2">
               <button
                 type="button"
