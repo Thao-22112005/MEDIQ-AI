@@ -2,21 +2,34 @@ import React from "react";
 import { useAuth } from "../auth/AuthContext";
 import { NavItem } from "./NavItem";
 import {
-  LayoutDashboard, Stethoscope, Users, Building2, DoorOpen, CalendarCheck, Activity, Calendar, User
+  LayoutDashboard, Bot, CalendarPlus, Calendar, FileText, User,
+  Stethoscope, Users, Building2, DoorOpen, CalendarCheck, Activity, Compass
 } from "lucide-react";
 
 export const Sidebar = () => {
   const { user } = useAuth();
   const role = user?.role;
 
-  // Nếu là PATIENT thì không hiển thị Sidebar dọc nữa
-  if (role === "PATIENT") {
-    return null;
-  }
-
   return (
     <aside className="w-64 bg-white border-r border-slate-200 flex flex-col shrink-0 min-h-[calc(100vh-4rem)] shadow-sm">
       <div className="p-4 space-y-6 flex-1">
+        {role === "PATIENT" && (
+          <div>
+            <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider px-3 mb-2">
+              Menu Bệnh Nhân
+            </div>
+            <nav className="space-y-1">
+              <NavItem to="/patient/dashboard" icon={LayoutDashboard} label="Tổng quan" />
+              <NavItem to="/patient/ai-chat" icon={Bot} label="AI Chat & Triage" badge="AI" />
+              <NavItem to="/patient/booking" icon={CalendarPlus} label="Đặt Lịch Khám" />
+              <NavItem to="/patient/map" icon={Compass} label="Sơ Đồ Phòng Khám" />
+              <NavItem to="/patient/appointments" icon={Calendar} label="Lịch Khám Của Tôi" />
+              <NavItem to="/patient/records" icon={FileText} label="Hồ Sơ Bệnh Án" />
+              <NavItem to="/patient/profile" icon={User} label="Thông Tin Cá Nhân" />
+            </nav>
+          </div>
+        )}
+
         {role === "DOCTOR" && (
           <div>
             <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider px-3 mb-2">
